@@ -5,7 +5,7 @@ import Hero from './components/Hero';
 import Collections from './components/Collections';
 import FeaturedProducts from './components/FeaturedProducts';
 
-// Lazy load only non-critical components
+// Lazy load components
 const ValueProposition = lazy(() => import('./components/ValueProposition'));
 const SocialProof = lazy(() => import('./components/SocialProof'));
 const Newsletter = lazy(() => import('./components/Newsletter'));
@@ -22,6 +22,7 @@ function App() {
   const { theme } = useThemeStore();
   const [isLoading, setIsLoading] = React.useState(true);
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [isMounted, setIsMounted] = React.useState(false);
 
   // Theme effect
   useLayoutEffect(() => {
@@ -32,18 +33,33 @@ function App() {
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 500); // Increased timeout for better stability
 
     return () => clearTimeout(timer);
   }, []);
 
   // Hydration effect
   useLayoutEffect(() => {
-    setIsHydrated(true);
+    // Ensure DOM is fully ready
+    requestAnimationFrame(() => {
+      setIsHydrated(true);
+    });
+  }, []);
+
+  // Mount effect
+  React.useEffect(() => {
+    setIsMounted(true);
+    
+    // Prevent scroll during initial load
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, []);
 
   // Early return for loading state
-  if (!isHydrated || isLoading) {
+  if (!isHydrated || isLoading || !isMounted) {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
         <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -53,11 +69,11 @@ function App() {
 
   // Bildirim izni isteğini kullanıcı etkileşimine bağlama
   const requestNotificationPermission = async () => {
+    if (!('Notification' in window)) return;
+    
     try {
-      if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        console.log('Notification permission:', permission);
-      }
+      const permission = await Notification.requestPermission();
+      console.log('Notification permission:', permission);
     } catch (error) {
       console.error('Error requesting notification permission:', error);
     }
@@ -68,7 +84,10 @@ function App() {
       <Navigation />
       
       {/* Critical sections with controlled render */}
-      <div style={{ visibility: isHydrated ? 'visible' : 'hidden' }}>
+      <div style={{ 
+        opacity: isHydrated && isMounted ? 1 : 0,
+        transition: 'opacity 0.3s ease-in-out'
+      }}>
         <Hero />
         <Collections />
         <FeaturedProducts />

@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -22,7 +22,8 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -32,7 +33,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -44,7 +45,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
@@ -52,101 +53,36 @@
   * {
     @apply border-border;
   }
-
-  html {
-    scroll-behavior: smooth;
-    -webkit-tap-highlight-color: transparent;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background-color: hsl(var(--background));
-  }
-  
   body {
-    @apply antialiased text-foreground;
-    height: 100%;
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: none;
-    background-color: hsl(var(--background));
-    transform: translateZ(0);
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
-
   #root {
-    isolation: isolate;
-    height: 100%;
-    position: relative;
-    z-index: 0;
+    @apply min-h-screen flex flex-col;
     contain: paint;
-  }
-
-  /* Mobile viewport height fix */
-  @supports (-webkit-touch-callout: none) {
-    .min-h-screen {
-      min-height: -webkit-fill-available;
-    }
-  }
-
-  /* Prevent content shift on load */
-  .min-h-screen {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-  }
-
-  /* Smooth transitions */
-  * {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-  }
-
-  /* Disable transitions during page load */
-  .preload * {
-    transition: none !important;
-    animation: none !important;
-  }
-
-  /* Mobile performance optimizations */
-  @media (max-width: 640px) {
-    * {
-      will-change: auto !important;
-    }
-
-    .min-h-screen {
-      min-height: -webkit-fill-available;
-    }
-
-    body {
-      position: fixed;
-      width: 100%;
-    }
+    z-index: 0;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium 
-           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring
-           disabled:pointer-events-none disabled:opacity-50
-           bg-primary text-primary-foreground shadow hover:bg-primary/90
-           h-10 px-4 py-2 transition-colors duration-200;
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    perspective: 1000;
+    transform: translate3d(0,0,0);
   }
   
-  .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium
-           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring
-           disabled:pointer-events-none disabled:opacity-50
-           border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground
-           h-10 px-4 py-2 transition-colors duration-200;
+  .animate-spin {
+    will-change: transform;
   }
-
-  .nav-link {
-    @apply text-foreground/90 hover:text-foreground px-3 py-2 relative 
-           after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 
-           after:bg-foreground hover:after:w-full after:transition-all after:duration-300;
+  
+  img {
+    content-visibility: auto;
   }
 }
