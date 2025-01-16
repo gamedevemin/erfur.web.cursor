@@ -1,13 +1,16 @@
 import React from 'react';
+import { Image } from './ui/Image';
 
 export default function Hero() {
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0">
-        <img
+        <Image
           className="w-full h-[700px] object-cover transform scale-105 hover:scale-100 transition-transform duration-700"
-          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80"
-          alt="Jewelry collection"
+          src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80"
+          alt="Luxury handbag collection"
+          width={1920}
+          height={700}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
       </div>
