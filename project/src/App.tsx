@@ -16,19 +16,27 @@ const LoadingFallback = () => null;
 
 function App() {
   const { theme } = useThemeStore();
-  const [mounted, setMounted] = React.useState(false);
+  const [ready, setReady] = React.useState(false);
 
   // Theme setup
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  // Mount control
+  // Initial setup
   React.useEffect(() => {
-    setMounted(true);
+    // Sayfa yüklendiğinde hazır olduğunu işaretle
+    const markReady = () => setReady(true);
+    
+    if (document.readyState === 'complete') {
+      markReady();
+    } else {
+      window.addEventListener('load', markReady);
+      return () => window.removeEventListener('load', markReady);
+    }
   }, []);
 
-  if (!mounted) {
+  if (!ready) {
     return null;
   }
 
