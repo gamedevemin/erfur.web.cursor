@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Truck, Shield, Clock, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Truck, Shield, Clock, Award } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 
 interface ValueProp {
@@ -78,7 +78,7 @@ const ValueProposition = () => {
     useEffect(() => {
       if (inView) {
         let start = 0;
-        const increment = value / (duration / 16); // 60fps için
+        const increment = value / (duration / 16);
         const timer = setInterval(() => {
           start += increment;
           if (start >= value) {
@@ -94,7 +94,7 @@ const ValueProposition = () => {
     }, [inView, value, duration]);
 
     return (
-      <span className="text-4xl font-bold text-primary">
+      <span className="text-4xl font-bold text-white">
         {count}
         {suffix}
       </span>
@@ -129,23 +129,10 @@ const ValueProposition = () => {
     setTouchEnd(0);
   };
 
-  // Carousel navigasyonu
-  const handlePrevClick = () => {
-    if (activeIndex > 0) {
-      setActiveIndex(prev => prev - 1);
-    }
-  };
-
-  const handleNextClick = () => {
-    if (activeIndex < valueProps.length - 1) {
-      setActiveIndex(prev => prev + 1);
-    }
-  };
-
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">
+        <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">
           Neden Bizi Tercih Etmelisiniz?
         </h2>
 
@@ -154,22 +141,19 @@ const ValueProposition = () => {
           {valueProps.map((prop) => (
             <div
               key={prop.id}
-              className="group p-6 rounded-xl bg-card hover:bg-primary/5 transition-colors duration-300 relative overflow-hidden"
+              className="group p-6 rounded-xl bg-white hover:bg-gray-50 transition-colors duration-300 relative overflow-hidden border border-gray-200 shadow-sm"
             >
-              {/* İkon Animasyonu */}
               <div className="mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
                 {prop.icon}
               </div>
 
-              <h3 className="text-xl font-semibold mb-2">{prop.title}</h3>
-              <p className="text-muted-foreground mb-4">{prop.description}</p>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">{prop.title}</h3>
+              <p className="text-gray-600 mb-4">{prop.description}</p>
 
-              {/* Sayaç */}
               <div className="mt-auto">
                 <Counter {...prop.stat} />
               </div>
 
-              {/* Hover Efekti */}
               <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/10 rounded-xl transition-colors duration-300" />
             </div>
           ))}
@@ -194,10 +178,10 @@ const ValueProposition = () => {
                   key={prop.id}
                   className="w-full flex-shrink-0 p-6"
                 >
-                  <div className="bg-card rounded-xl p-6 h-full">
+                  <div className="bg-white rounded-xl p-6 h-full border border-gray-200 shadow-sm">
                     <div className="text-primary mb-4">{prop.icon}</div>
-                    <h3 className="text-xl font-semibold mb-2">{prop.title}</h3>
-                    <p className="text-muted-foreground mb-4">{prop.description}</p>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-900">{prop.title}</h3>
+                    <p className="text-gray-600 mb-4">{prop.description}</p>
                     <div className="mt-auto">
                       <Counter {...prop.stat} />
                     </div>
@@ -207,37 +191,19 @@ const ValueProposition = () => {
             </div>
           </div>
 
-          {/* Carousel Navigasyonu */}
-          <div className="flex justify-between mt-4">
-            <button
-              onClick={handlePrevClick}
-              disabled={activeIndex === 0}
-              className="p-2 rounded-full bg-primary/10 text-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            
-            <div className="flex gap-2">
-              {valueProps.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === activeIndex
-                      ? 'bg-primary'
-                      : 'bg-primary/20'
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={handleNextClick}
-              disabled={activeIndex === valueProps.length - 1}
-              className="p-2 rounded-full bg-primary/10 text-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
+          {/* Carousel Dots */}
+          <div className="flex justify-center gap-2 mt-4">
+            {valueProps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === activeIndex
+                    ? 'bg-primary'
+                    : 'bg-primary/20'
+                }`}
+              />
+            ))}
           </div>
         </div>
       </div>
