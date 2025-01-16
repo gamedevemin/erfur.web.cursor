@@ -28,12 +28,36 @@ export function Image({
   const [currentSrc, setCurrentSrc] = useState(placeholderSrc);
   const [error, setError] = useState(false);
 
+  // Optimize image URL for different sizes
+  const optimizedSrc = useMemo(() => {
+    if (error) return placeholderSrc;
+    if (!width || !height) return src;
+
+    try {
+      const url = new URL(src);
+      
+      // Add size parameters for common image CDNs
+      if (url.hostname.includes('unsplash.com')) {
+        url.searchParams.set('w', width.toString());
+        url.searchParams.set('h', height.toString());
+        url.searchParams.set('q', '80');
+        url.searchParams.set('fit', 'crop');
+        url.searchParams.set('auto', 'format');
+      }
+      
+      return url.toString();
+    } catch {
+      // If URL parsing fails, return original src
+      return src;
+    }
+  }, [src, width, height, error, placeholderSrc]);
+
   useEffect(() => {
     const img = new window.Image();
-    img.src = src;
+    img.src = optimizedSrc;
     
     img.onload = () => {
-      setCurrentSrc(src);
+      setCurrentSrc(optimizedSrc);
       setIsLoading(false);
       onLoad?.();
     };
@@ -41,50 +65,32 @@ export function Image({
     img.onerror = () => {
       setError(true);
       setIsLoading(false);
+      console.error(`Failed to load image: ${optimizedSrc}`);
     };
-
-    // Cache management
-    if ('caches' in window) {
-      caches.open('image-cache').then(cache => {
-        cache.add(src).catch(console.error);
-      });
-    }
 
     return () => {
       img.onload = null;
       img.onerror = null;
     };
-  }, [src, onLoad]);
-
-  // Optimize image URL for different sizes
-  const optimizedSrc = useMemo(() => {
-    if (error) return placeholderSrc;
-    if (!width || !height) return currentSrc;
-
-    const url = new URL(currentSrc);
-    
-    // Add size parameters for common image CDNs
-    if (url.hostname.includes('unsplash.com')) {
-      url.searchParams.set('w', width.toString());
-      url.searchParams.set('h', height.toString());
-      url.searchParams.set('q', '80');
-      url.searchParams.set('fit', 'crop');
-    }
-    
-    return url.toString();
-  }, [currentSrc, width, height, error, placeholderSrc]);
+  }, [optimizedSrc, onLoad]);
 
   return (
     <div
       className={`relative overflow-hidden ${className}`}
-      style={{ aspectRatio: width && height ? `${width}/${height}` : 'auto' }}
+      style={{ 
+        aspectRatio: width && height ? `${width}/${height}` : 'auto',
+        backgroundColor: '#f1f1f1' 
+      }}
+      role="img"
+      aria-label={alt}
     >
       <img
-        src={optimizedSrc}
+        src={currentSrc}
         alt={alt}
         width={width}
         height={height}
         loading={loadingStrategy}
+        decoding="async"
         className={`w-full h-full object-cover transition-opacity duration-300 ${
           isLoading ? 'opacity-0' : 'opacity-100'
         }`}
@@ -93,11 +99,17 @@ export function Image({
       />
       
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+        <div 
+          className="absolute inset-0 bg-gray-100 animate-pulse"
+          role="presentation"
+        />
       )}
       
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+        <div 
+          className="absolute inset-0 flex items-center justify-center bg-gray-100"
+          role="alert"
+        >
           <span className="text-sm text-gray-500">Görsel yüklenemedi</span>
         </div>
       )}
