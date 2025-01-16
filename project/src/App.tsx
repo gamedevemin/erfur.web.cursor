@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useLayoutEffect } from 'react';
 import { useThemeStore } from './stores/themeStore';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
@@ -21,21 +21,29 @@ const LoadingFallback = () => (
 function App() {
   const { theme } = useThemeStore();
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isHydrated, setIsHydrated] = React.useState(false);
 
-  React.useEffect(() => {
+  // Theme effect
+  useLayoutEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  React.useEffect(() => {
-    // Simüle edilmiş minimum yükleme süresi
+  // Initial loading effect
+  useLayoutEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 100);
+    }, 300); // Increased minimum loading time
 
     return () => clearTimeout(timer);
   }, []);
 
-  if (isLoading) {
+  // Hydration effect
+  useLayoutEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Early return for loading state
+  if (!isHydrated || isLoading) {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
         <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -46,11 +54,13 @@ function App() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <Hero />
       
-      {/* Critical sections loaded immediately */}
-      <Collections />
-      <FeaturedProducts />
+      {/* Critical sections with controlled render */}
+      <div style={{ visibility: isHydrated ? 'visible' : 'hidden' }}>
+        <Hero />
+        <Collections />
+        <FeaturedProducts />
+      </div>
       
       {/* Non-critical sections lazy loaded */}
       <Suspense fallback={<LoadingFallback />}>

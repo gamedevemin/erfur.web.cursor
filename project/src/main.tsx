@@ -6,13 +6,26 @@ import './index.css'
 // Add preload class to prevent transitions during initial load
 document.documentElement.classList.add('preload');
 
-// Remove preload class after initial render
-window.addEventListener('load', () => {
-  document.documentElement.classList.remove('preload');
+// Create a container for the app
+const container = document.getElementById('root')!;
+
+// Create root with options
+const root = ReactDOM.createRoot(container, {
+  onRecoverableError: (error) => {
+    console.warn('Recoverable error:', error);
+  },
 });
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+// Initial render with strict mode
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
+
+// Remove preload class after hydration is complete
+window.requestAnimationFrame(() => {
+  window.requestAnimationFrame(() => {
+    document.documentElement.classList.remove('preload');
+  });
+});
