@@ -2,59 +2,68 @@ import React, { Suspense, lazy } from 'react';
 import { useThemeStore } from './stores/themeStore';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
+import Collections from './components/Collections';
+import FeaturedProducts from './components/FeaturedProducts';
 
-// Lazy load non-critical components
+// Lazy load only non-critical components
 const ValueProposition = lazy(() => import('./components/ValueProposition'));
-const Collections = lazy(() => import('./components/Collections'));
-const FeaturedProducts = lazy(() => import('./components/FeaturedProducts'));
 const SocialProof = lazy(() => import('./components/SocialProof'));
 const Newsletter = lazy(() => import('./components/Newsletter'));
 const Chat = lazy(() => import('./components/Chat'));
 
-// Improved loading fallback component
+// Loading fallback component
 const LoadingFallback = () => (
-  <div className="w-full min-h-[400px] flex items-center justify-center bg-background">
-    <div className="space-y-4 w-full max-w-7xl mx-auto px-4">
-      <div className="h-8 bg-gray-200 rounded-md animate-pulse w-1/3" />
-      <div className="h-4 bg-gray-200 rounded-md animate-pulse w-1/2" />
-      <div className="h-64 bg-gray-200 rounded-lg animate-pulse mt-8" />
-    </div>
+  <div className="w-full min-h-[200px] flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
 );
 
 function App() {
   const { theme } = useThemeStore();
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
+
+  React.useEffect(() => {
+    // Simüle edilmiş minimum yükleme süresi
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <Hero />
       
-      <main>
-        <Suspense fallback={<LoadingFallback />}>
-          <ValueProposition />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <Collections />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <FeaturedProducts />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <SocialProof />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <Newsletter />
-        </Suspense>
-      </main>
+      {/* Critical sections loaded immediately */}
+      <Collections />
+      <FeaturedProducts />
+      
+      {/* Non-critical sections lazy loaded */}
+      <Suspense fallback={<LoadingFallback />}>
+        <ValueProposition />
+      </Suspense>
+      
+      <Suspense fallback={<LoadingFallback />}>
+        <SocialProof />
+      </Suspense>
+      
+      <Suspense fallback={<LoadingFallback />}>
+        <Newsletter />
+      </Suspense>
       
       <Suspense fallback={null}>
         <Chat />
