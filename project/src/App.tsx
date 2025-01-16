@@ -11,9 +11,15 @@ const SocialProof = lazy(() => import('./components/SocialProof'));
 const Newsletter = lazy(() => import('./components/Newsletter'));
 const Chat = lazy(() => import('./components/Chat'));
 
-// Loading fallback component
+// Improved loading fallback component
 const LoadingFallback = () => (
-  <div className="w-full h-32 animate-pulse bg-gray-100 dark:bg-gray-800" role="presentation" />
+  <div className="w-full min-h-[400px] flex items-center justify-center bg-background">
+    <div className="space-y-4 w-full max-w-7xl mx-auto px-4">
+      <div className="h-8 bg-gray-200 rounded-md animate-pulse w-1/3" />
+      <div className="h-4 bg-gray-200 rounded-md animate-pulse w-1/2" />
+      <div className="h-64 bg-gray-200 rounded-lg animate-pulse mt-8" />
+    </div>
+  </div>
 );
 
 function App() {
@@ -28,27 +34,29 @@ function App() {
       <Navigation />
       <Hero />
       
-      <Suspense fallback={<LoadingFallback />}>
-        <ValueProposition />
-      </Suspense>
+      <main>
+        <Suspense fallback={<LoadingFallback />}>
+          <ValueProposition />
+        </Suspense>
+        
+        <Suspense fallback={<LoadingFallback />}>
+          <Collections />
+        </Suspense>
+        
+        <Suspense fallback={<LoadingFallback />}>
+          <FeaturedProducts />
+        </Suspense>
+        
+        <Suspense fallback={<LoadingFallback />}>
+          <SocialProof />
+        </Suspense>
+        
+        <Suspense fallback={<LoadingFallback />}>
+          <Newsletter />
+        </Suspense>
+      </main>
       
-      <Suspense fallback={<LoadingFallback />}>
-        <Collections />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
-        <FeaturedProducts />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
-        <SocialProof />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
-        <Newsletter />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
+      <Suspense fallback={null}>
         <Chat />
       </Suspense>
     </div>

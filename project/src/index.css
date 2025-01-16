@@ -23,7 +23,6 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
   }
 
   .dark {
@@ -50,30 +49,46 @@
 }
 
 @layer base {
+  * {
+    @apply border-border;
+  }
+
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
   
   body {
-    @apply antialiased bg-background text-foreground transition-colors duration-300;
+    @apply antialiased bg-background text-foreground;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Fix for mobile viewport height */
+  @supports (-webkit-touch-callout: none) {
+    .min-h-screen {
+      min-height: -webkit-fill-available;
+    }
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium 
            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring
            disabled:pointer-events-none disabled:opacity-50
            bg-primary text-primary-foreground shadow hover:bg-primary/90
-           h-10 px-4 py-2;
+           h-10 px-4 py-2 transition-colors duration-200;
   }
   
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium
            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring
            disabled:pointer-events-none disabled:opacity-50
            border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground
-           h-10 px-4 py-2;
+           h-10 px-4 py-2 transition-colors duration-200;
   }
 
   .nav-link {
