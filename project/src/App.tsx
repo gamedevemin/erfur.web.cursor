@@ -17,35 +17,38 @@ const LoadingFallback = () => null;
 function App() {
   const { theme } = useThemeStore();
   const [ready, setReady] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
 
   // Theme setup
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  // Initial setup
+  // Mount control
   React.useEffect(() => {
-    // Sayfa yüklendiğinde hazır olduğunu işaretle
-    const markReady = () => setReady(true);
-    
-    if (document.readyState === 'complete') {
-      markReady();
-    } else {
-      window.addEventListener('load', markReady);
-      return () => window.removeEventListener('load', markReady);
-    }
+    setMounted(true);
+    return () => setMounted(false);
   }, []);
 
-  if (!ready) {
+  // Ready control
+  React.useEffect(() => {
+    if (mounted) {
+      const timer = setTimeout(() => {
+        setReady(true);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [mounted]);
+
+  if (!mounted || !ready) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       {/* Critical content */}
       <div className="critical-content">
+        <Navigation />
         <Hero />
         <Collections />
         <FeaturedProducts />
