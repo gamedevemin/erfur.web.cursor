@@ -7,8 +7,8 @@ export default function Hero() {
       <div className="absolute inset-0">
         <Image
           className="w-full h-[700px] object-cover transform scale-105 hover:scale-100 transition-transform duration-700"
-          src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80"
-          alt="Luxury handbag collection"
+          src="https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&q=80"
+          alt="Elegant luxury handbag on display"
           width={1920}
           height={700}
         />
