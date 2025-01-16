@@ -32,7 +32,7 @@ function App() {
   useLayoutEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 300); // Increased minimum loading time
+    }, 300);
 
     return () => clearTimeout(timer);
   }, []);
@@ -50,6 +50,18 @@ function App() {
       </div>
     );
   }
+
+  // Bildirim izni isteğini kullanıcı etkileşimine bağlama
+  const requestNotificationPermission = async () => {
+    try {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        console.log('Notification permission:', permission);
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,7 +84,7 @@ function App() {
       </Suspense>
       
       <Suspense fallback={<LoadingFallback />}>
-        <Newsletter />
+        <Newsletter onSubscribe={requestNotificationPermission} />
       </Suspense>
       
       <Suspense fallback={null}>
