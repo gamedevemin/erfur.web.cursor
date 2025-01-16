@@ -3,13 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimal-ui" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="ERFUR - Modern Takı ve Aksesuar" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>ERFUR</title>
     
     <!-- Temel stil -->
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
       html {
         height: 100%;
         background: #ffffff;
@@ -17,18 +26,19 @@
       
       body {
         height: 100%;
-        margin: 0;
-        padding: 0;
+        overflow-y: auto;
         overflow-x: hidden;
+        background: #ffffff;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        overscroll-behavior-y: none;
       }
       
       #root {
         min-height: 100%;
+        background: #ffffff;
         display: flex;
         flex-direction: column;
-        background: #ffffff;
       }
       
       .loading {
@@ -58,20 +68,24 @@
         to { transform: rotate(360deg); }
       }
       
+      @supports (-webkit-touch-callout: none) {
+        body, #root {
+          min-height: -webkit-fill-available;
+        }
+      }
+      
       @media (max-width: 768px) {
         body {
-          position: fixed;
+          position: relative;
           width: 100%;
           height: 100%;
-          overflow: hidden;
+          -webkit-overflow-scrolling: touch;
         }
         
         #root {
-          position: fixed;
+          position: relative;
           width: 100%;
           height: 100%;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
         }
       }
     </style>

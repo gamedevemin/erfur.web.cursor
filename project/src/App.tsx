@@ -16,7 +16,6 @@ const LoadingFallback = () => null;
 
 function App() {
   const { theme } = useThemeStore();
-  const [ready, setReady] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
 
   // Theme setup
@@ -26,26 +25,31 @@ function App() {
 
   // Mount control
   React.useEffect(() => {
+    // Mobil viewport yüksekliğini ayarla
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    // İlk yükleme ve resize durumlarında viewport'u ayarla
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+
+    // Component'i mount et
     setMounted(true);
-    return () => setMounted(false);
+
+    return () => {
+      window.removeEventListener('resize', setViewportHeight);
+      setMounted(false);
+    };
   }, []);
 
-  // Ready control
-  React.useEffect(() => {
-    if (mounted) {
-      const timer = setTimeout(() => {
-        setReady(true);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [mounted]);
-
-  if (!mounted || !ready) {
+  if (!mounted) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}>
       {/* Critical content */}
       <div className="critical-content">
         <Navigation />
