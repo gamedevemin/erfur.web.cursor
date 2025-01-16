@@ -3,23 +3,104 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="ERFUR - Modern Takı ve Aksesuar" />
     <title>ERFUR</title>
     
-    <!-- Preload critical assets -->
+    <!-- Önbellek kontrolü -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Kritik CSS -->
+    <style>
+      /* Temel stil ve animasyonlar */
+      html {
+        background-color: #ffffff;
+        opacity: 0;
+        visibility: visible;
+      }
+      
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      /* Yükleme animasyonu */
+      .loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+      }
+      
+      .loading::after {
+        content: '';
+        width: 30px;
+        height: 30px;
+        border: 2px solid #000;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      /* Mobil optimizasyonları */
+      @media (max-width: 768px) {
+        html {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+          overscroll-behavior-y: none;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+    </style>
+    
+    <!-- Kritik kaynakları önyükle -->
     <link rel="preload" href="/src/index.css" as="style" />
     <link rel="preload" href="/src/main.tsx" as="script" type="module" />
     
-    <!-- Prevent FOUC -->
-    <style>
-      html { visibility: hidden; }
-      .critical-content { content-visibility: auto; }
-    </style>
+    <!-- Yazı tiplerini önyükle -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
+    <!-- Yükleme göstergesi -->
+    <div id="loading" class="loading"></div>
+    
+    <!-- React kök elementi -->
     <div id="root"></div>
+    
+    <!-- Ana uygulama -->
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Yükleme göstergesini kaldır -->
+    <script>
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('loading');
+        if (loader) {
+          loader.style.opacity = '0';
+          loader.style.transition = 'opacity 0.3s ease-out';
+          setTimeout(() => loader.remove(), 300);
+        }
+      });
+    </script>
   </body>
 </html>
