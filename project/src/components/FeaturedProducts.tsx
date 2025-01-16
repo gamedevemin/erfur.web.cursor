@@ -1,11 +1,25 @@
 import { lazy, Suspense, useState } from 'react';
 import { Heart, ShoppingCart } from 'lucide-react';
-import { Image } from './ui/Image';
 import { useCartStore } from '../stores/cartStore';
 import { products } from '../data/products';
 import type { Product } from '../types/product';
 
 const QuickViewModal = lazy(() => import('./QuickViewModal'));
+
+// Renkli arka planlar için yardımcı fonksiyon
+const getColorByIndex = (index: number) => {
+  const colors = [
+    'bg-gradient-to-br from-pink-500 to-rose-500',
+    'bg-gradient-to-br from-blue-500 to-indigo-500',
+    'bg-gradient-to-br from-green-500 to-emerald-500',
+    'bg-gradient-to-br from-purple-500 to-violet-500',
+    'bg-gradient-to-br from-yellow-500 to-amber-500',
+    'bg-gradient-to-br from-red-500 to-rose-500',
+    'bg-gradient-to-br from-teal-500 to-cyan-500',
+    'bg-gradient-to-br from-orange-500 to-red-500'
+  ];
+  return colors[index % colors.length];
+};
 
 export default function FeaturedProducts() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
@@ -18,7 +32,7 @@ export default function FeaturedProducts() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80",
+      image: product.image,
       quantity: 1,
       discount: product.discount,
     });
@@ -37,21 +51,19 @@ export default function FeaturedProducts() {
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Öne Çıkan Ürünler</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map(product => (
+          {products.map((product, index) => (
             <div
               key={product.id}
               className="group relative bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="aspect-w-1 aspect-h-1 rounded-t-lg overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-center object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+              <div className={`aspect-w-1 aspect-h-1 rounded-t-lg overflow-hidden ${getColorByIndex(index)}`}>
+                <div className="w-full h-full flex items-center justify-center p-6">
+                  <div className="text-white text-xl font-bold text-center">
+                    {product.name}
+                  </div>
+                </div>
                 {product.discount && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium">
+                  <div className="absolute top-2 right-2 bg-white text-red-500 px-2 py-1 rounded-md text-sm font-medium">
                     -{product.discount}%
                   </div>
                 )}

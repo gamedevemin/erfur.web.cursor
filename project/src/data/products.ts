@@ -3,79 +3,79 @@ import type { Product } from '../types/product';
 export const products: Product[] = [
   {
     id: 1,
-    name: 'Vintage Deri Ceket',
+    name: 'Elegance Deri Çanta',
     price: '₺1299',
-    image: 'https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Klasik kesim, yüksek kaliteli deri ceket. İç astar ve çoklu cep detayları.',
+    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80',
+    description: 'Lüks deri işçiliği, geniş iç hacim ve şık tasarım.',
     stock: 8,
     discount: 15,
-    category: 'kadin'
+    category: 'canta'
   },
   {
     id: 2,
-    name: 'Casual Pamuklu Gömlek',
+    name: 'Kristal Küpe Set',
     price: '₺399',
-    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Rahat kesim, %100 pamuk, casual gömlek. Uzun kollu ve düğmeli manşet.',
+    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',
+    description: 'El işçiliği kristal taşlı zarif küpe seti.',
     stock: 15,
-    category: 'erkek'
+    category: 'taki'
   },
   {
     id: 3,
-    name: 'Premium Kot Pantolon',
+    name: 'Mini Omuz Çantası',
     price: '₺799',
-    image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Slim fit kesim, streç kot pantolon. Yüksek bel ve rahat kullanım.',
+    image: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=800&q=80',
+    description: 'Kompakt tasarım, ayarlanabilir askı, günlük kullanım için ideal.',
     stock: 3,
     discount: 20,
-    category: 'kadin'
+    category: 'canta'
   },
   {
     id: 4,
-    name: 'Spor Ayakkabı',
+    name: 'Altın Kaplama Kolye',
     price: '₺1499',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Hafif ve konforlu spor ayakkabı. Özel yastıklama teknolojisi.',
+    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',
+    description: '18 ayar altın kaplama, zarif tasarım.',
     stock: 0,
     discount: 10,
-    category: 'erkek'
+    category: 'taki'
   },
   {
     id: 5,
-    name: 'Klasik Triko Kazak',
+    name: 'Vintage El Çantası',
     price: '₺599',
-    image: 'https://images.unsplash.com/photo-1631541909061-71e349d1a193?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Yün karışımlı, balıkçı yaka triko kazak. Kış sezonu için ideal.',
+    image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80',
+    description: 'Retro tasarım, yumuşak deri, özel detaylar.',
     stock: 12,
-    category: 'erkek'
+    category: 'canta'
   },
   {
     id: 6,
-    name: 'Deri El Çantası',
+    name: 'Lüks Clutch Çanta',
     price: '₺899',
-    image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Gerçek deri, orta boy el çantası. Ayarlanabilir askı ve iç bölmeler.',
+    image: 'https://images.unsplash.com/photo-1563904092230-7ec217b65fe2?auto=format&fit=crop&w=800&q=80',
+    description: 'Özel günler için tasarlanmış şık clutch çanta.',
     stock: 5,
     discount: 25,
-    category: 'aksesuar'
+    category: 'canta'
   },
   {
     id: 7,
-    name: 'Güneş Gözlüğü',
+    name: 'İnci Kolye Set',
     price: '₺449',
-    image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'UV korumalı, polarize cam güneş gözlüğü. Modern tasarım.',
+    image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&w=800&q=80',
+    description: 'Doğal inci ve gümüş detaylı set.',
     stock: 20,
-    category: 'aksesuar'
+    category: 'taki'
   },
   {
     id: 8,
-    name: 'Akıllı Saat',
+    name: 'Akşam Çantası',
     price: '₺2999',
-    image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    description: 'Fitness takibi, bildirimler ve şık tasarım bir arada.',
+    image: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=800&q=80',
+    description: 'Özel tasarım, taşlı detaylar, zincir askı.',
     stock: 7,
     discount: 30,
-    category: 'aksesuar'
+    category: 'canta'
   }
 ]; 
