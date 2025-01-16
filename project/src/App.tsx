@@ -1,114 +1,106 @@
-import React, { Suspense, lazy, useLayoutEffect } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useThemeStore } from './stores/themeStore';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Collections from './components/Collections';
 import FeaturedProducts from './components/FeaturedProducts';
 
-// Lazy load components
+// Lazy components
 const ValueProposition = lazy(() => import('./components/ValueProposition'));
 const SocialProof = lazy(() => import('./components/SocialProof'));
 const Newsletter = lazy(() => import('./components/Newsletter'));
 const Chat = lazy(() => import('./components/Chat'));
 
-// Loading fallback component
-const LoadingFallback = () => (
-  <div className="w-full min-h-[200px] flex items-center justify-center">
+// Simple loading component
+const Loading = () => (
+  <div className="fixed inset-0 bg-background flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
 );
 
 function App() {
   const { theme } = useThemeStore();
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isHydrated, setIsHydrated] = React.useState(false);
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [ready, setReady] = React.useState(false);
+  const [contentVisible, setContentVisible] = React.useState(false);
 
-  // Theme effect
-  useLayoutEffect(() => {
+  // Theme setup
+  React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  // Initial loading effect
-  useLayoutEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500); // Increased timeout for better stability
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Hydration effect
-  useLayoutEffect(() => {
-    // Ensure DOM is fully ready
-    requestAnimationFrame(() => {
-      setIsHydrated(true);
-    });
-  }, []);
-
-  // Mount effect
+  // Initial setup
   React.useEffect(() => {
-    setIsMounted(true);
+    // Prevent FOUC
+    document.documentElement.style.visibility = 'hidden';
     
-    // Prevent scroll during initial load
-    document.body.style.overflow = 'hidden';
-    
+    // Ensure all critical resources are loaded
+    Promise.all([
+      // Add any critical resource loading here
+      new Promise(resolve => setTimeout(resolve, 100))
+    ]).then(() => {
+      document.documentElement.style.visibility = 'visible';
+      setReady(true);
+      
+      // Delay showing content for smooth transition
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          setContentVisible(true);
+        }, 50);
+      });
+    });
+
     return () => {
-      document.body.style.overflow = 'unset';
+      document.documentElement.style.visibility = 'visible';
     };
   }, []);
 
-  // Early return for loading state
-  if (!isHydrated || isLoading || !isMounted) {
-    return (
-      <div className="fixed inset-0 bg-background flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+  if (!ready) {
+    return <Loading />;
   }
 
-  // Bildirim izni isteğini kullanıcı etkileşimine bağlama
-  const requestNotificationPermission = async () => {
-    if (!('Notification' in window)) return;
-    
-    try {
-      const permission = await Notification.requestPermission();
-      console.log('Notification permission:', permission);
-    } catch (error) {
-      console.error('Error requesting notification permission:', error);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      {/* Critical sections with controlled render */}
-      <div style={{ 
-        opacity: isHydrated && isMounted ? 1 : 0,
-        transition: 'opacity 0.3s ease-in-out'
-      }}>
-        <Hero />
-        <Collections />
-        <FeaturedProducts />
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <div
+        className="transition-opacity duration-300 ease-in-out"
+        style={{ opacity: contentVisible ? 1 : 0 }}
+      >
+        <Navigation />
+        
+        {/* Critical content */}
+        <div className="critical-content">
+          <Hero />
+          <Collections />
+          <FeaturedProducts />
+        </div>
+
+        {/* Non-critical content */}
+        <div className="non-critical-content">
+          <Suspense fallback={null}>
+            <ValueProposition />
+          </Suspense>
+          
+          <Suspense fallback={null}>
+            <SocialProof />
+          </Suspense>
+          
+          <Suspense fallback={null}>
+            <Newsletter 
+              onSubscribe={async () => {
+                if (!('Notification' in window)) return;
+                try {
+                  await Notification.requestPermission();
+                } catch (error) {
+                  console.error('Notification error:', error);
+                }
+              }} 
+            />
+          </Suspense>
+          
+          <Suspense fallback={null}>
+            <Chat />
+          </Suspense>
+        </div>
       </div>
-      
-      {/* Non-critical sections lazy loaded */}
-      <Suspense fallback={<LoadingFallback />}>
-        <ValueProposition />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
-        <SocialProof />
-      </Suspense>
-      
-      <Suspense fallback={<LoadingFallback />}>
-        <Newsletter onSubscribe={requestNotificationPermission} />
-      </Suspense>
-      
-      <Suspense fallback={null}>
-        <Chat />
-      </Suspense>
     </div>
   );
 }

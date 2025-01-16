@@ -49,12 +49,20 @@
   }
 }
 
+/* Base Styles */
 @layer base {
   * {
     @apply border-border;
   }
+  
+  html {
+    @apply antialiased;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground min-h-screen;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -62,27 +70,49 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
+  
   #root {
-    @apply min-h-screen flex flex-col;
-    contain: paint;
-    z-index: 0;
+    @apply min-h-screen flex flex-col relative;
+    isolation: isolate;
   }
 }
 
-/* Mobile Performance Optimizations */
+/* Critical Render Path Optimizations */
+.critical-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 5000px;
+}
+
+.non-critical-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 3000px;
+}
+
+/* Mobile Optimizations */
 @media (max-width: 768px) {
   * {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    perspective: 1000;
-    transform: translate3d(0,0,0);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
-  
+
+  img, video {
+    content-visibility: auto;
+    contain: strict;
+  }
+
   .animate-spin {
     will-change: transform;
   }
+
+  /* Prevent layout shifts */
+  .critical-content, .non-critical-content {
+    contain: layout style paint;
+  }
   
-  img {
-    content-visibility: auto;
+  /* Optimize transitions */
+  .transition-opacity {
+    will-change: opacity;
   }
 }
