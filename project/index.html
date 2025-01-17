@@ -3,15 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimal-ui" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="ERFUR - Modern Takı ve Aksesuar" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>ERFUR</title>
     
-    <!-- Temel stil -->
+    <!-- Kritik CSS -->
     <style>
+      :root {
+        --vh: 1vh;
+      }
+      
       * {
         margin: 0;
         padding: 0;
@@ -21,7 +27,9 @@
       
       html {
         height: 100%;
+        height: calc(var(--vh, 1vh) * 100);
         background: #ffffff;
+        overflow: hidden;
       }
       
       body {
@@ -32,13 +40,21 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         overscroll-behavior-y: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
       }
       
       #root {
         min-height: 100%;
+        height: 100%;
         background: #ffffff;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       
       .loading {
@@ -68,24 +84,23 @@
         to { transform: rotate(360deg); }
       }
       
-      @supports (-webkit-touch-callout: none) {
-        body, #root {
-          min-height: -webkit-fill-available;
-        }
-      }
-      
       @media (max-width: 768px) {
         body {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          -webkit-overflow-scrolling: touch;
+          touch-action: manipulation;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          user-select: none;
         }
         
         #root {
           position: relative;
           width: 100%;
-          height: 100%;
+        }
+        
+        .loading::after {
+          width: 32px;
+          height: 32px;
+          border-width: 2px;
         }
       }
     </style>

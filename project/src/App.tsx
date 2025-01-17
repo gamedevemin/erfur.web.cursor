@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useLayoutEffect } from 'react';
 import { useThemeStore } from './stores/themeStore';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
@@ -19,72 +19,87 @@ function App() {
   const [mounted, setMounted] = React.useState(false);
 
   // Theme setup
-  React.useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  // Mount control
-  React.useEffect(() => {
-    // Mobil viewport yüksekliğini ayarla
-    const setViewportHeight = () => {
+  // Viewport ve mount kontrolü
+  useLayoutEffect(() => {
+    const updateViewportHeight = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
 
-    // İlk yükleme ve resize durumlarında viewport'u ayarla
-    setViewportHeight();
-    window.addEventListener('resize', setViewportHeight);
+    // İlk yükleme için viewport'u ayarla
+    updateViewportHeight();
+
+    // Resize ve orientation değişikliklerini dinle
+    window.addEventListener('resize', updateViewportHeight);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateViewportHeight, 100);
+    });
 
     // Component'i mount et
     setMounted(true);
 
     return () => {
-      window.removeEventListener('resize', setViewportHeight);
-      setMounted(false);
+      window.removeEventListener('resize', updateViewportHeight);
+      window.removeEventListener('orientationchange', updateViewportHeight);
     };
   }, []);
 
+  // App Shell
   if (!mounted) {
-    return null;
+    return (
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background" style={{ minHeight: 'calc(var(--vh, 1vh) * 100)' }}>
-      {/* Critical content */}
-      <div className="critical-content">
+      {/* App Shell - Critical Content */}
+      <div className="app-shell">
         <Navigation />
         <Hero />
-        <Collections />
-        <FeaturedProducts />
       </div>
 
-      {/* Non-critical content */}
-      <div className="non-critical-content">
-        <Suspense fallback={<LoadingFallback />}>
-          <ValueProposition />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <SocialProof />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <Newsletter 
-            onSubscribe={async () => {
-              if (!('Notification' in window)) return;
-              try {
-                await Notification.requestPermission();
-              } catch (error) {
-                console.error('Notification error:', error);
-              }
-            }} 
-          />
-        </Suspense>
-        
-        <Suspense fallback={<LoadingFallback />}>
-          <Chat />
-        </Suspense>
-      </div>
+      {/* Main Content */}
+      <main className="flex-grow">
+        <div className="critical-content">
+          <Collections />
+          <FeaturedProducts />
+        </div>
+
+        {/* Non-critical content */}
+        <div className="non-critical-content">
+          <Suspense fallback={<LoadingFallback />}>
+            <ValueProposition />
+          </Suspense>
+          
+          <Suspense fallback={<LoadingFallback />}>
+            <SocialProof />
+          </Suspense>
+          
+          <Suspense fallback={<LoadingFallback />}>
+            <Newsletter 
+              onSubscribe={async () => {
+                if (!('Notification' in window)) return;
+                try {
+                  await Notification.requestPermission();
+                } catch (error) {
+                  console.error('Notification error:', error);
+                }
+              }} 
+            />
+          </Suspense>
+          
+          <Suspense fallback={<LoadingFallback />}>
+            <Chat />
+          </Suspense>
+        </div>
+      </main>
     </div>
   );
 }
