@@ -39,7 +39,7 @@ const startApp = () => {
       document.addEventListener('touchstart', () => {}, { passive: true });
       
       // Scroll performansını artır
-      rootElement.style.webkitOverflowScrolling = 'touch';
+      (rootElement.style as any)['-webkit-overflow-scrolling'] = 'touch';
     }
 
     // React uygulamasını render et
